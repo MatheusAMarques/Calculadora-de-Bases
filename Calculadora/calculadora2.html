@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora</title>
+    <link rel="stylesheet" href="stylecalculadora.css">
+</head>
+<body>
+    <div class="div_body">
+    <p class="informe_n1">Informe o primeiro número e sua base</p>
+    <input type="text" id="ipt_n1" placeholder="Insira um número">
+    <br>
+    <br>
+    <input name="base1" type="radio" id="base1_decimal" value="decimal">
+    <label for="base1_decimal">Decimal</label>
+    <input name="base1" type="radio" id="base1_hexadecimal" value="hexadecimal">
+    <label for="base1_hexadecimal">Hexadecimal</label>
+    <input name="base1" type="radio" id="base1_octal" value="octal">
+    <label for="base1_octal">Octal</label>
+    <input name="base1" type="radio" id="base1_binario" value="binario">
+    <label for="base1_binario">Binário</label>
+
+    <br><br>
+
+    <p class="informe_n2">Informe o segundo número e sua base</p>
+    <input type="text" id="ipt_n2" placeholder="Insira um número">
+    <br>
+    <br>
+    <input name="base2" type="radio" id="base2_decimal" value="decimal">
+    <label for="base2_decimal">Decimal</label>
+    <input name="base2" type="radio" id="base2_hexadecimal" value="hexadecimal">
+    <label for="base2_hexadecimal">Hexadecimal</label>
+    <input name="base2" type="radio" id="base2_octal" value="octal">
+    <label for="base2_octal">Octal</label>
+    <input name="base2" type="radio" id="base2_binario" value="binario">
+    <label for="base2_binario">Binário</label>
+
+    <br><br>
+
+    <p class="informar">Informe a operação</p>
+    <br>
+    <select id="slt_operacao">
+        <option value="#">Selecione um</option>
+        <option value="somar">Somar</option>
+        <option value="subtrair">Subtrair</option>
+        <option value="multiplicar">Multiplicar</option>
+        <option value="dividir">Dividir</option>
+    </select>
+
+    <br><br>
+
+    <p class="selecionarBase">Selecione a base do resultado</p>
+    <br>
+    <div class="select">
+    <input name="baseResultado" type="radio" id="baseResultado_decimal" value="decimal">
+    <label for="baseResultado_decimal">Decimal</label>
+    <input name="baseResultado" type="radio" id="baseResultado_hexadecimal" value="hexadecimal">
+    <label for="baseResultado_hexadecimal">Hexadecimal</label>
+    <input name="baseResultado" type="radio" id="baseResultado_octal" value="octal">
+    <label for="baseResultado_octal">Octal</label>
+    <input name="baseResultado" type="radio" id="baseResultado_binario" value="binario">
+    <label for="baseResultado_binario">Binário</label>
+    </div>
+    <br><br>
+
+    <button onclick="calcular()">Calcular</button>
+
+    <br><br>
+    <div id="div_resultado">Resultado</div>
+    <br>
+    <a class="voltar" href="marquesmachine.html">Voltar ao conversor</a>
+    </div>
+    <script>
+        function calcular() {
+            var numero1 = document.getElementById('ipt_n1').value;
+            var numero2 = document.getElementById('ipt_n2').value;
+
+            var base1 = document.querySelector('input[name="base1"]:checked')?.value;
+            var base2 = document.querySelector('input[name="base2"]:checked')?.value;
+
+            if (!validarEntrada(numero1, base1) || !validarEntrada(numero2, base2)) {
+                alert('Números inválidos');
+                return;
+            }
+
+            var valorDecimal1 = parseInt(numero1, base1 === 'hexadecimal' ? 16 : base1 === 'octal' ? 8 : base1 === 'binario' ? 2 : 10);
+            var valorDecimal2 = parseInt(numero2, base2 === 'hexadecimal' ? 16 : base2 === 'octal' ? 8 : base2 === 'binario' ? 2 : 10);
+
+            var operacao = document.getElementById('slt_operacao').value;
+            var resultado;
+
+            if (operacao === 'somar') {
+                resultado = valorDecimal1 + valorDecimal2;
+            } else if (operacao === 'subtrair') {
+                resultado = valorDecimal1 - valorDecimal2;
+            } else if (operacao === 'multiplicar') {
+                resultado = valorDecimal1 * valorDecimal2;
+            } else if (operacao === 'dividir') {
+                resultado = valorDecimal1 / valorDecimal2;
+            } else {
+                alert('Selecione uma operação válida');
+                return;
+            }
+
+            var baseResultado = document.querySelector('input[name="baseResultado"]:checked')?.value || 'decimal';
+            var resultadoFormatado;
+
+            if (baseResultado === 'decimal') {
+                resultadoFormatado = resultado;
+            } else if (baseResultado === 'hexadecimal') {
+                resultadoFormatado = resultado.toString(16).toUpperCase();
+            } else if (baseResultado === 'octal') {
+                resultadoFormatado = resultado.toString(8).toUpperCase();
+            } else if (baseResultado === 'binario') {
+                resultadoFormatado = resultado.toString(2).toUpperCase();
+            } else {
+                resultadoFormatado = resultado;
+            }
+
+            document.getElementById('div_resultado').innerHTML = `Resultado: ${resultadoFormatado}`;
+        }
+
+        function validarEntrada(numero, base) {
+            var validChar = '';
+            if (base === 'decimal') {
+                validChar = '0123456789';
+            } else if (base === 'hexadecimal') {
+                validChar = '0123456789ABCDEFabcdef';
+            } else if (base === 'octal') {
+                validChar = '01234567';
+            } else if (base === 'binario') {
+                validChar = '01';
+            }
+
+            for (var i = 0; i < numero.length; i++) {
+                if (validChar.indexOf(numero[i]) === -1) {
+                    return false;
+                }
+            }
+            return true;
+        }
+    </script>
+</body>
+</html>
